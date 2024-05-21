@@ -1,0 +1,37 @@
+---
+- name: BIND project 
+  hosts: DNS_SERVER
+  collections:
+  - ansible.builtin
+  tasks:
+  - name: install BIND
+    dnf:
+      name: bind
+      state: present
+  - name: configure BIND
+    template:
+      src: "{{ playbook_dir }}/named.conf.j2"
+      dest: /etc/named.conf
+  - name: create forward zone 
+    template: 
+      src: "{{ playbook_dir }}/meher.tn.zone.j2"
+      dest: /var/named/meher.tn.zone
+  - name: create reverse zone
+    template:
+      src: "{{ playbook_dir }}/100.168.192.in-addr.arpa.zone.j2"
+      dest: /var/named/100.168.192.in-addr.arpa.zone
+  - name: start and enable BIND
+    systemd:
+      name: named.service
+      state: started
+      enabled: true
+  - name: open DNS port
+    firewalld:
+      service: dns
+      permanent: true
+      state: enabled
+    notify: myhandy
+  handlers:
+    - name: myhandy
+      command: 
+        cmd: "firewall-cmd --reload"  

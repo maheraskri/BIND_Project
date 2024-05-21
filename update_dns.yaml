@@ -1,0 +1,27 @@
+---
+- name: update dns records dynamically
+  hosts: green2, green3
+  gather_facts: false
+  collections:
+  - ansible.builtin
+  tasks:
+  - name: copy the script to remote clients
+    copy:
+      src: "{{ playbook_dir }}/myscript.sh"
+      dest: "/tmp/"
+      mode: "0777" 
+    notify: myotherhandy
+  handlers:
+    - name: myotherhandy
+      command: "/tmp/myscript.sh"
+- name: restart BIND server 
+  hosts: green1
+  gather_facts: false
+  collections:
+  - ansible.builtin
+  tasks: 
+  - name: update BIND
+    systemd:
+      name: named.service
+      state: restarted 
+

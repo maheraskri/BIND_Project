@@ -1,0 +1,27 @@
+//
+// named.conf
+//
+acl trusted { localhost; 192.168.100.0/24; };
+options {
+        listen-on port 53 { localhost; 192.168.100.204; };
+        directory   "/var/named";
+        dump-file   "/var/named/data/cache_dump.db";
+        statistics-file "/var/named/data/named_stats.txt";
+        memstatistics-file "/var/named/data/named_mem_stats.txt";
+        secroots-file "/var/named/data/named.secroots";
+        recursing-file  "/var/named/data/named.recursing";
+        allow-query  { trusted; };
+   recursion  no;
+};
+
+zone "meher.tn" IN { 
+      type master;
+      file "/var/named/meher.tn.zone";
+      allow-update { trusted; };
+      };
+
+zone "100.168.192.in-addr.arpa" IN {
+      type master;
+      file "/var/named/100.168.192.in-addr.arpa.zone";
+      allow-update { trusted; };
+      };
