@@ -4,7 +4,7 @@ myrev=$(ip -br ad sh | grep -v lo | awk '{print $3}' | awk -F . '{print $4}' | c
 nsupdate << EOF
 server 192.168.100.204
 zone meher.tn
-update add $HOSTNAME. 86400 A $myvar
+update add $HOSTNAME 86400 A $myvar
 send
 quit
 EOF
